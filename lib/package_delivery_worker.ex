@@ -7,9 +7,15 @@ defmodule PackageDelivery.Worker do
 
 
   def handle_call({:deploy, options}, _from, state) do
-    System.cmd(options)
+    System.cmd(options, [])
     Agent.update(:collector, &([options|&1]))
     {:reply, "results #{options}", state}
+  end
+
+  def handle_cast({:deploy, options}, state) do
+    System.cmd(options, [])
+    Agent.update(:collector, &([options|&1]))
+    {:noreply , state}
   end
 
 end

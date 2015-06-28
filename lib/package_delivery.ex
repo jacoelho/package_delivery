@@ -4,7 +4,7 @@ defmodule PackageDelivery do
   def deploy(options) do
     :poolboy.transaction(
       :deploy_pool,
-      fn(pid) -> :gen_server.call(pid, {:deploy, options}) end
+      fn(pid) -> :gen_server.cast(pid, {:deploy, options}) end
       )
   end
 
