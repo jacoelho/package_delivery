@@ -18,7 +18,6 @@ defmodule PackageDelivery.Mixfile do
   defp deps do
     [
       {:poolboy, "~> 1.5.1"},
-      {:exactor, "~> 2.1.0"}
     ]
   end
 end

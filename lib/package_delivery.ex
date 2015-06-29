@@ -2,10 +2,8 @@ defmodule PackageDelivery do
   use Application
 
   def deploy(options) do
-    :poolboy.transaction(
-      :deploy_pool,
-      fn(pid) -> :gen_server.cast(pid, {:deploy, options}) end
-      )
+    :poolboy.transaction(:deploy_pool, fn(pid) ->
+      PackageDelivery.Worker.deploy(pid, options) end)
   end
 
   def get_result do
@@ -18,8 +16,8 @@ defmodule PackageDelivery do
     pool_options = [
       name: {:local, :deploy_pool},
       worker_module: PackageDelivery.Worker,
-      size: 0,
-      max_overflow: 5
+      size: 5,
+      max_overflow: 0
     ]
 
     children = [

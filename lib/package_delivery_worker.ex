@@ -2,18 +2,19 @@ defmodule PackageDelivery.Worker do
   use GenServer
 
   def start_link(_args) do
-    GenServer.start_link(__MODULE__, [], [])
+    GenServer.start_link(__MODULE__, nil, [])
   end
 
+  def init(_) do
+    {:ok, nil}
+  end
 
-  def handle_call({:deploy, options}, _from, state) do
-    System.cmd(options, [])
-    Agent.update(:collector, &([options|&1]))
-    {:reply, "results #{options}", state}
+  def deploy(pid, options) do
+    :gen_server.cast(pid, {:deploy, options})
   end
 
   def handle_cast({:deploy, options}, state) do
-    System.cmd(options, [])
+    System.cmd(options)
     Agent.update(:collector, &([options|&1]))
     {:noreply , state}
   end
